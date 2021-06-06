@@ -1,0 +1,41 @@
+body {
+  background-image: url(/book\ 15.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+section {
+  margin-left: 550px;
+  background-color: rgb(128 128 128/80%);
+  width: 400px;
+  height: 200px;
+}
+div {
+  width: 500px;
+  height: 40px;
+}
+label {
+  font-size: 25px;
+  margin-left: 10px;
+}
+input {
+  margin-left: 20px;
+  width: 200px;
+  height: 25px;
+}
+button {
+  width: 200px;
+  height: 35px;
+  margin-left: 100px;
+  margin-top: 15px;
+}
+.email_class {
+  margin-left: 50px;
+}
+h1 {
+  font-size: 50px;
+  font-style: oblique;
+  color: black;
+  text-align: center;
+  margin-top: 200px;
+  background-color: rgb(189 185 186/40%);
+}
