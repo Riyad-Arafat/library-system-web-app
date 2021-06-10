@@ -1,0 +1,70 @@
+/* Signup Page */
+
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+input {
+  padding: 14px;
+  outline: none;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 17px;
+  outline: none;
+  border: 0;
+  cursor: pointer;
+  margin: 10px 10px;
+}
+button:hover {
+  opacity: 0.9;
+}
+
+#signup-page {
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#signup-page section {
+  background-color: #04020254;
+  width: 40%;
+}
+#signup-page form {
+  display: flex;
+  flex-direction: column;
+}
+#signup-page .title {
+  text-align: center;
+  font-size: 50px;
+  font-style: oblique;
+  color: #fffbe9;
+  padding: 20px;
+  margin: 0;
+  background-color: #04020254;
+}
+
+.inputs-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  padding: 1px 15px;
+}
+
+.inputs-control label {
+  font-size: 20px;
+  color: #fffbe9;
+}
