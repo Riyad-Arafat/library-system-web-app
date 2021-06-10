@@ -15,18 +15,24 @@ class Signup(CreateView):
     def post(self, request):
         if request.method == 'POST':
             body = json.loads(request.body)
-            firstName = body["firstName"]
-            lastName = body["lastName"]
-            email = body["email"]
-            password = body["password"].encode('utf8')
+            
             data = {"satusCode": 200}
-            hashed = bcrypt.hashpw(password, bcrypt.gensalt()).decode()
-            token = str(uuid.uuid4())
             try:
 
-                user = User.objects.create(
-                    firstName=firstName, lastName=lastName, email=email, password=hashed, token=token)
-                user.save()
+                firstName = body["firstName"]
+                lastName = body["lastName"]
+                email = body["email"]
+                password = body["password"].encode('utf8')
+                hashed = bcrypt.hashpw(password, bcrypt.gensalt()).decode()
+                token = str(uuid.uuid4())
+                
+                if(len(email) < 10 or len(password) < 8 or firstName == "" or lastName == "") :
+                    data = {"satusCode": 400}
+
+                else:
+                    user = User.objects.create(
+                        firstName=firstName, lastName=lastName, email=email, password=hashed, token=token)
+                    user.save()
 
             except:
                 data = {"satusCode": 400}
