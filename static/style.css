@@ -29,7 +29,13 @@ button:hover {
   opacity: 0.9;
 }
 
-#signup-page {
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+#signup-page,
+#login-page {
   background-repeat: no-repeat;
   background-size: cover;
   height: 100%;
@@ -39,15 +45,14 @@ button:hover {
   align-items: center;
 }
 
-#signup-page section {
+#signup-page section,
+#login-page section {
   background-color: #04020254;
   width: 40%;
 }
-#signup-page form {
-  display: flex;
-  flex-direction: column;
-}
-#signup-page .title {
+
+#signup-page .title,
+#login-page .title {
   text-align: center;
   font-size: 50px;
   font-style: oblique;
