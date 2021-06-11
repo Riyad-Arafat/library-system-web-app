@@ -103,20 +103,32 @@ const routes = {
   "#/login": loginPage,
   "#/signup": singupPage,
   "#/profile": "profile_Path",
-  "#/book": "profile_Path",
+  "#/book": "book_Path",
 };
 
 const API_URL = "http://127.0.0.1:8000";
+
+//////
+function Routing() {
+  const hash = window.location.hash;
+  const token = localStorage.getItem("token") ? true : false;
+  const isGuestHash = hash === "#/login" || hash === "#/signup";
+
+  if (isGuestHash && !token) onNavigate(hash);
+  if (!isGuestHash && !token) onNavigate("#/login");
+  if (isGuestHash && token) onNavigate("#/home");
+  if (!isGuestHash && token && routes[hash]) onNavigate(hash);
+}
 
 // //  RENDER THE PAGE BY ITS URL
 window.onload = () => {
   const hash = window.location.hash;
   if (!hash || !routes[hash]) {
     window.history.pushState({}, "#/home", window.location.origin + "#/home");
-
     document.getElementById("root").innerHTML = routes["#/home"];
-  } else
-    document.getElementById("root").innerHTML = routes[window.location.hash];
+  } else {
+    Routing();
+  }
 };
 // // ROUTING FUNCTION
 const onNavigate = async (pathname) => {
@@ -124,7 +136,4 @@ const onNavigate = async (pathname) => {
   document.getElementById("root").innerHTML = routes[pathname];
 };
 
-window.onhashchange = function (e) {
-  console.log(this.location.hash);
-  onNavigate(this.location.hash);
-};
+window.onhashchange = () => Routing();
