@@ -15,7 +15,7 @@ class Signup(CreateView):
     def post(self, request):
         if request.method == 'POST':
             body = json.loads(request.body)
-            
+
             data = {"satusCode": 200}
             try:
 
@@ -25,8 +25,8 @@ class Signup(CreateView):
                 password = body["password"].encode('utf8')
                 hashed = bcrypt.hashpw(password, bcrypt.gensalt()).decode()
                 token = str(uuid.uuid4())
-                
-                if(len(email) < 10 or len(password) < 8 or firstName == "" or lastName == "") :
+
+                if(len(email) < 10 or len(password) < 8 or firstName == "" or lastName == ""):
                     data = {"satusCode": 400}
 
                 else:
@@ -49,26 +49,28 @@ class Login(CreateView):
     def post(self, request):
         if request.method == 'POST':
             body = json.loads(request.body)
+            response = {"satusCode": 200}
+            try:
+                email = body["email"]
+                password = body["password"].encode('utf8')
 
-            email = body["email"]
-            password = body["password"].encode('utf8')
+                user = User.objects.filter(email=email).values(
+                    "password", "token", "role")
 
-            user = User.objects.filter(email=email).values(
-                "password", "token")
+                data = list(user)
+                data = json.loads(json.dumps(data[0]))
 
-            data = list(user)
-            data = json.loads(json.dumps(data[0]))
+                if bcrypt.checkpw(password, data["password"].encode("utf8")):
+                    del data["password"]
+                    response = {"data": data, "satusCode": 200}
+                else:
+                    response = {"satusCode": 400}
 
-            if bcrypt.checkpw(password, data["password"].encode("utf8")):
-                del data["password"]
-                response = {"data": data}
-
-            else:
-                data = {"satusCode": 400}
-
-            response = {"data": data}
+            except:
+                response = {"satusCode": 400}
 
             return JsonResponse(response, safe=False)
+
         else:
             return JsonResponse({"satusCode": 404}, safe=False)
 
