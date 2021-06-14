@@ -97,9 +97,72 @@ const login = () => {
   xhttp.send(JSON.stringify(data));
 };
 
+// Home
+
+const HomePage = `<div>
+<header>
+    <nav id=nav-bar>
+        <ul>
+            <li><a href="#" onclick="onNavigate('#/home'); return false;">Home</a></li>
+            <li><a href="#" onclick="onNavigate('#/profile'); return false;">Profile</a></li>
+            <li class="logout-btn"><a href="#" onclick="onNavigate('#/home'); return false;">logout</a></li>
+
+        </ul>
+    </nav>
+
+</header>
+
+<div class="search-container">
+  <div>
+    <input type="text" name="search" placeholder="search" />
+  </div>
+</div>
+
+<div class="books-container">
+    <div class="card">
+      <div class="card-img"></div>
+      <div class="card-body">
+        <div class="item">
+          <h3>Title: <span>dfsd</span></h3>
+          <h3>ISBN: <span>456</span></h3>
+        </div>
+        <div class="item">
+          <h3>Author: <span>etw</span></h3>
+          <h3>Category: <span>etw</span></h3>
+        </div>
+        
+      </div>
+      <div class="card-footer">
+          <button>Open</button>
+      </div>
+    </div>
+
+    <div class="card">
+        <div class="card-img"></div>
+        <div class="card-body">
+          <div class="item">
+            <h3>Title: <span>dfsd</span></h3>
+            <h3>ISBN: <span>456</span></h3>
+          </div>
+          <div class="item">
+            <h3>Author: <span>etw</span></h3>
+            <h3>Category: <span>etw</span></h3>
+          </div>
+          
+        </div>
+        <div class="card-footer">
+            <button>Open</button>
+        </div>
+    </>
+</div>
+
+
+
+</div>`;
+
 // // ALL APPP ROUTES
 const routes = {
-  "#/home": "./pages/Home/index.html",
+  "#/home": HomePage,
   "#/login": loginPage,
   "#/signup": singupPage,
   "#/profile": "profile_Path",
