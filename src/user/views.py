@@ -1,7 +1,4 @@
-from django.core import serializers
-from django.db.models import fields
 from django.views.generic.edit import CreateView
-# from django.shortcuts import render
 from django.http import JsonResponse
 import json
 import bcrypt

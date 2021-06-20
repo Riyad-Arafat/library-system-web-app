@@ -22,8 +22,8 @@ class User(models.Model):
     role = CharField(
         max_length=10, choices=ROLES, null=True, blank=True, default="USER")
 
-    borrowed_book = ManyToManyField(
-        Book, related_name='borrowed_books', blank=True, default=None)
+    books = ManyToManyField(
+        Book, related_name='users', blank=True, default=None)
 
     created_at = DateTimeField(default=timezone.now)
     update_at = DateTimeField(auto_now=True)

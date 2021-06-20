@@ -4,38 +4,32 @@ from django.db.models.fields import *
 
 from django.utils import timezone
 
+
+import datetime
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
 # Create your models here.
 
 
-class Category(models.Model):
+########  UTILS #######
 
-    tilte = CharField(max_length=200)
-    created_at = DateTimeField(default=timezone.now)
-    update_at = DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
+def current_year():
+    return datetime.date.today().year
 
 
-# ////////////////// ################## ////////////////
-
-class Author (models.Model):
-    firstName = CharField(max_length=50)
-    lastName = CharField(max_length=50)
-    created_at = DateTimeField(default=timezone.now)
-    update_at = DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.firstName + " " + self.lastName
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
 
 
 class Book(models.Model):
 
     title = CharField(max_length=200)
-    author = ForeignKey(
-        Author, on_delete=models.CASCADE, related_name='author', blank=True, null=True)
-    category = ManyToManyField(
-        Category, related_name='Category', default=None, blank=True)
+    author = CharField(max_length=200)
+    category = CharField(max_length=200)
+    isbn = CharField(max_length=200)
+    pYear = PositiveIntegerField(
+        default=current_year(), validators=[MinValueValidator(1900), max_value_current_year])
     created_at = DateTimeField(default=timezone.now)
     update_at = DateTimeField(auto_now=True)
 
