@@ -11,43 +11,13 @@ from django.db.models import Q
 
 class Books(CreateView):
 
-    def get(self, request):
-        data = []
-        try:
-            books = BookModel.objects.filter(~Q(amount=0)).values("id", "title", "author",  "category", "isbn", "pYear", 'amount', "users",
-                                                                  "created_at",  "update_at").order_by('-created_at')
-            data = list(books)
-
-        except Exception as e:
-            print(e)
-            response = JsonResponse([], safe=False)
-            response.status_code = 400
-            return response
-
-        return JsonResponse({"data": data}, safe=False)
-
-    # CREATE BOOK
-    def post(self, request, task=None, query=None):
-
-        if request.method == 'POST' and task is None and query is None:
-            body = json.loads(request.body)
-            print(body)
-
+    def get(self, request, task=None, query=None):
+        if task is None and query is None:
+            data = []
             try:
-
-                title = body["title"]
-                author = body["author"]
-                category = body["category"]
-                isbn = body["isbn"]
-                pYear = body["pYear"]
-                amount = body["amount"]
-
-                pYear = int(pYear)
-                amount = int(amount)
-
-                book = BookModel.objects.create(
-                    title=title, category=category, author=author, isbn=isbn, pYear=pYear, amount=amount)
-                book.save()
+                books = BookModel.objects.filter(~Q(amount=0)).values("id", "title", "author",  "category", "isbn", "pYear", 'amount', "users",
+                                                                      "created_at",  "update_at").order_by('-created_at')
+                data = list(books)
 
             except Exception as e:
                 print(e)
@@ -55,7 +25,7 @@ class Books(CreateView):
                 response.status_code = 400
                 return response
 
-            return JsonResponse({}, safe=False)
+            return JsonResponse({"data": data}, safe=False)
         elif(task == "search" and query is not None):
             data = []
             try:
@@ -69,6 +39,36 @@ class Books(CreateView):
                 return response
 
             return JsonResponse({"data": data}, safe=False)
+
+    # CREATE BOOK
+    def post(self, request):
+
+        body = json.loads(request.body)
+        print(body)
+
+        try:
+
+            title = body["title"]
+            author = body["author"]
+            category = body["category"]
+            isbn = body["isbn"]
+            pYear = body["pYear"]
+            amount = body["amount"]
+
+            pYear = int(pYear)
+            amount = int(amount)
+
+            book = BookModel.objects.create(
+                title=title, category=category, author=author, isbn=isbn, pYear=pYear, amount=amount)
+            book.save()
+
+        except Exception as e:
+            print(e)
+            response = JsonResponse([], safe=False)
+            response.status_code = 400
+            return response
+
+        return JsonResponse({}, safe=False)
 
 
 class Book(CreateView):
