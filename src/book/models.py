@@ -30,6 +30,7 @@ class Book(models.Model):
     isbn = CharField(max_length=200)
     pYear = PositiveIntegerField(
         default=current_year(), validators=[MinValueValidator(1900), max_value_current_year])
+    amount = IntegerField()
     created_at = DateTimeField(default=timezone.now)
     update_at = DateTimeField(auto_now=True)
 
