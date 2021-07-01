@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="book-view__container">
+
+        <div class="book-view__card">
+            <div class="book-view__img"></div>
+            <div class="book-view__body">
+                <div class="item">
+                    <h3>Title: <span>dfsd</span></h3>
+                    <h3>ISBN: <span>456</span></h3>
+                    <h3>Left: <span style="color: red;">111</span></h3>
+
+                </div>
+                <div class="item">
+                    <h3>Author: <span>etw</span></h3>
+                    <h3>Category: <span>etw</span></h3>
+
+                </div>
+
+            </div>
+            <div class="book-view__actions">
+                <a class="btn">Book</a>
+                <a class="btn" href="#open-modal">Edit</a>
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Edit Form -->
+    <div id="open-modal" class="modal-window">
+        <div>
+            <a href="#" title="Close" class="modal-close">Close</a>
+            <div>
+                <h1 class="title"></h1>
+
+                <form>
+                    <div class="inputs-control">
+                        <label>Title</label>
+                        <input type="text" required placeholder="Book Title" name="title">
+                    </div>
+                    <div class="inputs-control">
+                        <label>Author</label>
+                        <input type="text" required placeholder="Book Author" name="author">
+                    </div>
+                    <div class="inputs-control">
+                        <label>Category</label>
+                        <input type="text" required placeholder="Book Category" name="category">
+                    </div>
+                    <div class="inputs-control">
+                        <label>ISBN</label>
+                        <input type="text" required placeholder="Book ISBN" name="isbn">
+                    </div>
+
+                    <div class="inputs-control">
+                        <label>publishing year</label>
+                        <input type="number" min="1900" max="2099" step="1" value="2016" name="pyear" />
+                    </div>
+
+                    <button type="button">Submit</button>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

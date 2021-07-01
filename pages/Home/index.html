@@ -1,4 +1,16 @@
-<div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+
     <header>
         <nav id=nav-bar>
             <ul>
@@ -12,35 +24,89 @@
     </header>
 
     <div class="search-container">
-        <input type="text" name="search" placeholder="search" />
+        <div>
+            <input type="text" name="search" placeholder="search" />
+        </div>
     </div>
 
-    <div class="books-container">
-        <div class="card">
-            <div class="card-img">
-                <img />
-            </div>
-            <div class="card-body">
+    <div>
+        <a type="button" class="btn" href="#open-modal">Add New Book</a>
+        <div id="open-modal" class="modal-window">
+            <div>
+                <a href="#" title="Close" class="modal-close">Close</a>
+                <div>
+                    <h1 class="title"></h1>
 
+                    <form>
+                        <div class="inputs-control">
+                            <label>Title</label>
+                            <input type="text" required placeholder="Book Title" name="title">
+                        </div>
+                        <div class="inputs-control">
+                            <label>Author</label>
+                            <input type="text" required placeholder="Book Author" name="author">
+                        </div>
+                        <div class="inputs-control">
+                            <label>Category</label>
+                            <input type="text" required placeholder="Book Category" name="category">
+                        </div>
+                        <div class="inputs-control">
+                            <label>ISBN</label>
+                            <input type="text" required placeholder="Book ISBN" name="isbn">
+                        </div>
+
+                        <div class="inputs-control">
+                            <label>publishing year</label>
+                            <input type="number" min="1900" max="2099" step="1" value="2016" name="pyear" />
+                        </div>
+
+                        <button type="button">Submit</button>
+
+                    </form>
+
+
+                </div>
             </div>
         </div>
+    </div>
+    <div class="books-container">
 
 
         <div class="card">
-            <div class="card-img">
-                <img />
-            </div>
+            <div class="card-img"></div>
             <div class="card-body">
-                <h3>sdasdasd</h3>
-                <span>asdasfjiagegwhegpweighweighweoghwoehgowehgewhgwehguoiwehg</span>
+                <div class="item">
+                    <h3>Title: <span>dfsd</span></h3>
+                    <h3>ISBN: <span>456</span></h3>
+                </div>
+                <div class="item">
+                    <h3>Author: <span>etw</span></h3>
+                    <h3>Category: <span>etw</span></h3>
+                </div>
+
             </div>
             <div class="card-footer">
                 <button>Open</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img"></div>
+            <div class="card-body">
+                <div class="item">
+                    <h3>Title: <span>dfsd</span></h3>
+                    <h3>ISBN: <span>456</span></h3>
+                </div>
+                <div class="item">
+                    <h3>Author: <span>etw</span></h3>
+                    <h3>Category: <span>etw</span></h3>
+                </div>
 
+            </div>
+            <div class="card-footer">
+                <button>Open</button>
             </div>
         </div>
     </div>
+</body>
 
-
-
-</div>
+</html>
