@@ -1,5 +1,4 @@
-// // // // SIGNUP PAGE
-
+// // // // // // // // // // // SIGNUP PAGE // // // // // // // // // // // // // // // // // // // // // //
 const singupPage = `<div id="signup-page" style="background-image: url('./static/signup.jpeg');">
 <h1 class="title">sign up</h1>
 <section>
@@ -50,7 +49,7 @@ const signUp = () => {
   xhttp.send(JSON.stringify(data));
 };
 
-// // // LOGIN PAGE
+// // // // // // // // // // // // // //  LOGIN PAGE // // // // // // // // // // // // // // // // // // // // // //
 const loginPage = `<div id="login-page" style="background-image: url('./static/login.jpg')">
 <h1 class="title"> Login </h1>
 <section>
@@ -97,68 +96,147 @@ const login = () => {
   xhttp.send(JSON.stringify(data));
 };
 
-// Home
+// // // // // // // // // // // // HOME PAGE // // // // // // // // // // // // // // // // // // // // // //
+let books = [];
 
-const HomePage = `<div>
-<header>
-    <nav id=nav-bar>
-        <ul>
-            <li><a href="#" onclick="onNavigate('#/home'); return false;">Home</a></li>
-            <li><a href="#" onclick="onNavigate('#/profile'); return false;">Profile</a></li>
-            <li class="logout-btn"><a href="#" onclick="onNavigate('#/home'); return false;">logout</a></li>
+const HomePage = `
+  <div>
 
-        </ul>
-    </nav>
+  <header>
+  <nav id=nav-bar>
+      <ul>
+          <li><a href="#" onclick="onNavigate('#/home'); return false;">Home</a></li>
+          <li><a href="#" onclick="onNavigate('#/profile'); return false;">Profile</a></li>
+          <li class="logout-btn"><a href="#" onclick="onNavigate('#/home'); return false;">logout</a></li>
+
+      </ul>
+  </nav>
 
 </header>
 
 <div class="search-container">
   <div>
-    <input type="text" name="search" placeholder="search" />
+      <input type="text" name="search" placeholder="search" onchange="search()"/>
+  </div>
+<a type="button" class="btn" href="#open-modal">Add New Book</a>
+
+</div>
+
+<div>
+  <div id="open-modal" class="modal-window">
+      <div>
+          <a href="#" title="Close" class="modal-close">Close</a>
+          <h1 class="title">Add New Book</h1>
+
+          <div>
+
+              <form>
+                  <div class="inputs-control">
+                      <label>Title</label>
+                      <input type="text" required placeholder="Book Title" name="title">
+                  </div>
+                  <div class="inputs-control">
+                      <label>Author</label>
+                      <input type="text" required placeholder="Book Author" name="author">
+                  </div>
+                  <div class="inputs-control">
+                      <label>Category</label>
+                      <input type="text" required placeholder="Book Category" name="category">
+                  </div>
+                  <div class="inputs-control">
+                      <label>ISBN</label>
+                      <input type="text" required placeholder="Book ISBN" name="isbn">
+                  </div>
+
+                  <div class="inputs-control">
+                      <label>publishing year</label>
+                      <input type="number" min="1900" max="2099" step="1" value="2016" name="pyear" />
+                  </div>
+
+                  <button type="button">Submit</button>
+
+              </form>
+
+
+          </div>
+      </div>
   </div>
 </div>
+    <div id="books-container"></div>
+</div>
+`;
 
-<div class="books-container">
-    <div class="card">
-      <div class="card-img"></div>
-      <div class="card-body">
-        <div class="item">
-          <h3>Title: <span>dfsd</span></h3>
-          <h3>ISBN: <span>456</span></h3>
-        </div>
-        <div class="item">
-          <h3>Author: <span>etw</span></h3>
-          <h3>Category: <span>etw</span></h3>
-        </div>
-        
-      </div>
-      <div class="card-footer">
-          <button>Open</button>
-      </div>
-    </div>
+// // // // // BOOK PAGE
 
-    <div class="card">
-        <div class="card-img"></div>
-        <div class="card-body">
-          <div class="item">
+const bookPage = `
+<div class="book-view__container">
+
+<div class="book-view__card">
+    <div class="book-view__img"></div>
+    <div class="book-view__body">
+        <div class="item">
             <h3>Title: <span>dfsd</span></h3>
             <h3>ISBN: <span>456</span></h3>
-          </div>
-          <div class="item">
+            <h3>Left: <span style="color: red;">111</span></h3>
+
+        </div>
+        <div class="item">
             <h3>Author: <span>etw</span></h3>
             <h3>Category: <span>etw</span></h3>
-          </div>
-          
+
         </div>
-        <div class="card-footer">
-            <button>Open</button>
-        </div>
-    </>
+
+    </div>
+    <div class="book-view__actions">
+        <a class="btn">Book</a>
+        <a class="btn" href="#open-modal">Edit</a>
+
+
+    </div>
+
 </div>
 
+</div>
+<!-- Edit Form -->
+<div id="open-modal" class="modal-window">
+<div>
+    <a href="#" title="Close" class="modal-close">Close</a>
+    <div>
+        <h1 class="title"></h1>
+
+        <form>
+            <div class="inputs-control">
+                <label>Title</label>
+                <input type="text" required placeholder="Book Title" name="title">
+            </div>
+            <div class="inputs-control">
+                <label>Author</label>
+                <input type="text" required placeholder="Book Author" name="author">
+            </div>
+            <div class="inputs-control">
+                <label>Category</label>
+                <input type="text" required placeholder="Book Category" name="category">
+            </div>
+            <div class="inputs-control">
+                <label>ISBN</label>
+                <input type="text" required placeholder="Book ISBN" name="isbn">
+            </div>
+
+            <div class="inputs-control">
+                <label>publishing year</label>
+                <input type="number" min="1900" max="2099" step="1" value="2016" name="pyear" />
+            </div>
+
+            <button type="button">Submit</button>
+
+        </form>
 
 
-</div>`;
+    </div>
+</div>
+</div>
+
+`;
 
 // // ALL APPP ROUTES
 const routes = {
@@ -166,12 +244,14 @@ const routes = {
   "#/login": loginPage,
   "#/signup": singupPage,
   "#/profile": "profile_Path",
-  "#/book": "book_Path",
+  "#/book": bookPage,
 };
 
 const API_URL = "http://127.0.0.1:8000";
 
-//////
+let bookId = 0;
+
+// // // // //  URGENT FUNCTIONS // // // // // // // // // // // // // // // // // // // // // //
 function Routing() {
   const hash = window.location.hash;
   const token = localStorage.getItem("token") ? true : false;
@@ -183,20 +263,112 @@ function Routing() {
   if (!isGuestHash && token && routes[hash]) onNavigate(hash);
 }
 
-// //  RENDER THE PAGE BY ITS URL
+// // //  RENDER THE PAGE BY ITS URL
 window.onload = () => {
   const hash = window.location.hash;
   if (!hash || !routes[hash]) {
-    window.history.pushState({}, "#/home", window.location.origin + "#/home");
-    document.getElementById("root").innerHTML = routes["#/home"];
+    onNavigate("#/home");
   } else {
     Routing();
   }
 };
-// // ROUTING FUNCTION
+// // // ROUTING FUNCTION
 const onNavigate = async (pathname) => {
+  if (pathname !== "#/book") {
+    bookId = 0;
+  }
+  if (pathname == "#/home") {
+    getAlBooks();
+  }
   window.history.pushState({}, pathname, window.location.origin + pathname);
   document.getElementById("root").innerHTML = routes[pathname];
 };
 
 window.onhashchange = () => Routing();
+
+const onOpenBook = (id) => {
+  if (!isNaN(id)) {
+    console.log(id);
+    onNavigate("#/book");
+  }
+};
+
+// // // // // // ////
+
+const getAlBooks = async () => {
+  let data = [];
+  await fetch(`${API_URL}/books/`)
+    .then((response) => response.json())
+    .then((respons) => (data = respons.data))
+    .catch((e) => console.log(e));
+  document.getElementById("books-container").innerHTML = data.map(
+    (book) =>
+      `<div class="card">
+      <div class="card-img"></div>
+      <div class="card-body">
+          <div class="item">
+              <h3>Title: <span>${book.title}</span></h3>
+              <h3>Author: <span>${book.author}</span></h3>
+              <h3>Category: <span>${book.category}</span></h3>
+
+          </div>
+          <div class="item">
+              <h3>publishing year: <span>${book.pYear}</span></h3>
+              <h3>Left: <span style="color: red;">${book.amount}</span></h3>
+
+              
+          </div>
+          <div class="item">
+            <h3>ISBN: <span>${book.isbn}</span></h3>
+          </div>
+
+      </div>
+      <div class="card-footer">
+          <button onclick="onOpenBook(${book.id})" >Open</button>
+      </div>
+  </div>`
+  );
+};
+
+const search = async () => {
+  let query = document.querySelector("input[name='search']").value;
+  let data = [];
+  if (query !== "")
+    await fetch(`${API_URL}/books/search/q=${query}/`)
+      .then((response) => response.json())
+      .then((respons) => (data = respons.data))
+      .catch((e) => console.log(e));
+  else
+    await fetch(`${API_URL}/books/`)
+      .then((response) => response.json())
+      .then((respons) => (data = respons.data))
+      .catch((e) => console.log(e));
+
+  document.getElementById("books-container").innerHTML = data.map(
+    (book) =>
+      `<div class="card">
+        <div class="card-img"></div>
+        <div class="card-body">
+            <div class="item">
+                <h3>Title: <span>${book.title}</span></h3>
+                <h3>Author: <span>${book.author}</span></h3>
+                <h3>Category: <span>${book.category}</span></h3>
+  
+            </div>
+            <div class="item">
+                <h3>publishing year: <span>${book.pYear}</span></h3>
+                <h3>Left: <span style="color: red;">${book.amount}</span></h3>
+  
+                
+            </div>
+            <div class="item">
+              <h3>ISBN: <span>${book.isbn}</span></h3>
+            </div>
+  
+        </div>
+        <div class="card-footer">
+            <button onclick="onOpenBook(${book.id})" >Open</button>
+        </div>
+    </div>`
+  );
+};
