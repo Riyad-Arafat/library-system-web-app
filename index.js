@@ -1,3 +1,15 @@
+const navBar = `
+<nav id=nav-bar>
+    <ul>
+        <li><a href="#" onclick="onNavigate('#/home'); return false;">Home</a></li>
+        <li><a href="#" onclick="onNavigate('#/profile'); return false;">Profile</a></li>
+        <li class="logout-btn"><a href="#" onclick="logOut(); return false;">logout</a></li>
+
+    </ul>
+</nav>
+
+`;
+
 // // // // // // // // // // // SIGNUP PAGE // // // // // // // // // // // // // // // // // // // // // //
 const singupPage = `<div id="signup-page" style="background-image: url('./static/signup.jpeg');">
 <h1 class="title">sign up</h1>
@@ -83,11 +95,9 @@ const login = () => {
   xhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       let respons = JSON.parse(this.response);
-      if (respons.satusCode === 200) {
-        localStorage.setItem("token", respons.data.token);
-        localStorage.setItem("role", respons.data.role);
-        onNavigate("#/home");
-      }
+      localStorage.setItem("token", respons.data.token);
+      localStorage.setItem("role", respons.data.role);
+      onNavigate("#/home");
     }
   };
   xhttp.open("POST", `${API_URL}/auth/login/`, true);
@@ -97,26 +107,15 @@ const login = () => {
 };
 
 // // // // // // // // // // // // HOME PAGE // // // // // // // // // // // // // // // // // // // // // //
-let books = [];
 
 const HomePage = `
-  <div>
-
-  <header>
-  <nav id=nav-bar>
-      <ul>
-          <li><a href="#" onclick="onNavigate('#/home'); return false;">Home</a></li>
-          <li><a href="#" onclick="onNavigate('#/profile'); return false;">Profile</a></li>
-          <li class="logout-btn"><a href="#" onclick="onNavigate('#/home'); return false;">logout</a></li>
-
-      </ul>
-  </nav>
-
+<header>
+  ${navBar}
 </header>
-
+  
 <div class="search-container">
   <div>
-      <input type="text" name="search" placeholder="search" onchange="search()"/>
+      <input type="text" name="search" placeholder="search" onchange="search()"#/>
   </div>
 <a type="button" class="btn" href="#open-modal">Add New Book</a>
 
@@ -150,10 +149,14 @@ const HomePage = `
 
                   <div class="inputs-control">
                       <label>publishing year</label>
-                      <input type="number" min="1900" max="2099" step="1" value="2016" name="pyear" />
+                      <input type="number" min="1900" max="2099" step="1" value="2016" name="pYear" />
                   </div>
+                  <div class="inputs-control">
+                  <label>Amount</label>
+                  <input type="number" min="1" step="1" value="1" name="amount" />
+              </div>
 
-                  <button type="button">Submit</button>
+                  <button type="button" onclick="bookAction('POST')">Submit</button>
 
               </form>
 
@@ -162,79 +165,44 @@ const HomePage = `
       </div>
   </div>
 </div>
-    <div id="books-container"></div>
-</div>
+<div id="books-container"></div>
+
 `;
+
+const bookAction = (method) => {
+  let title = document.querySelector("input[name='title']").value;
+  let author = document.querySelector("input[name='author']").value;
+  let isbn = document.querySelector("input[name='isbn']").value;
+  let category = document.querySelector("input[name='category']").value;
+  let pYear = document.querySelector("input[name='pYear']").value;
+  let amount = document.querySelector("input[name='amount']").value;
+
+  const data = { title, author, isbn, category, pYear, amount };
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      let respons = JSON.parse(this.response);
+      if (method === "POST") onNavigate("#/home");
+      if (method === "PUT") onNavigate("#/book");
+    }
+  };
+  if (method === "POST") xhttp.open(method, `${API_URL}/books/`, true);
+  if (method === "PUT") xhttp.open(method, `${API_URL}/book/${bookId}/`, true);
+
+  xhttp.setRequestHeader("accept", "application/json");
+
+  xhttp.send(JSON.stringify(data));
+};
 
 // // // // // BOOK PAGE
 
 const bookPage = `
-<div class="book-view__container">
+<header>
+  ${navBar}
+</header>
 
-<div class="book-view__card">
-    <div class="book-view__img"></div>
-    <div class="book-view__body">
-        <div class="item">
-            <h3>Title: <span>dfsd</span></h3>
-            <h3>ISBN: <span>456</span></h3>
-            <h3>Left: <span style="color: red;">111</span></h3>
+<div id="book-view__container"></div>
 
-        </div>
-        <div class="item">
-            <h3>Author: <span>etw</span></h3>
-            <h3>Category: <span>etw</span></h3>
-
-        </div>
-
-    </div>
-    <div class="book-view__actions">
-        <a class="btn">Book</a>
-        <a class="btn" href="#open-modal">Edit</a>
-
-
-    </div>
-
-</div>
-
-</div>
-<!-- Edit Form -->
-<div id="open-modal" class="modal-window">
-<div>
-    <a href="#" title="Close" class="modal-close">Close</a>
-    <div>
-        <h1 class="title"></h1>
-
-        <form>
-            <div class="inputs-control">
-                <label>Title</label>
-                <input type="text" required placeholder="Book Title" name="title">
-            </div>
-            <div class="inputs-control">
-                <label>Author</label>
-                <input type="text" required placeholder="Book Author" name="author">
-            </div>
-            <div class="inputs-control">
-                <label>Category</label>
-                <input type="text" required placeholder="Book Category" name="category">
-            </div>
-            <div class="inputs-control">
-                <label>ISBN</label>
-                <input type="text" required placeholder="Book ISBN" name="isbn">
-            </div>
-
-            <div class="inputs-control">
-                <label>publishing year</label>
-                <input type="number" min="1900" max="2099" step="1" value="2016" name="pyear" />
-            </div>
-
-            <button type="button">Submit</button>
-
-        </form>
-
-
-    </div>
-</div>
-</div>
 
 `;
 
@@ -277,25 +245,38 @@ const onNavigate = async (pathname) => {
   if (pathname !== "#/book") {
     bookId = 0;
   }
-  if (pathname == "#/home") {
-    getAlBooks();
+  if (pathname === "#/home") {
+    getAllBooks();
   }
   window.history.pushState({}, pathname, window.location.origin + pathname);
   document.getElementById("root").innerHTML = routes[pathname];
+
+  if (pathname === "#/book") {
+    getOneBook(bookId);
+    if (bookId === 0) onNavigate("#/home");
+  }
 };
 
 window.onhashchange = () => Routing();
 
+// /// LOGOUT
+const logOut = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  onNavigate("#/login");
+};
+
+// /// OPEN BOOK
 const onOpenBook = (id) => {
   if (!isNaN(id)) {
-    console.log(id);
+    bookId = id;
     onNavigate("#/book");
   }
 };
 
 // // // // // // ////
 
-const getAlBooks = async () => {
+const getAllBooks = async () => {
   let data = [];
   await fetch(`${API_URL}/books/`)
     .then((response) => response.json())
@@ -307,7 +288,9 @@ const getAlBooks = async () => {
       <div class="card-img"></div>
       <div class="card-body">
           <div class="item">
-              <h3>Title: <span>${book.title}</span></h3>
+            <h3>Title: <span>${book.title}</span></h3>
+          </div>
+          <div class="item">
               <h3>Author: <span>${book.author}</span></h3>
               <h3>Category: <span>${book.category}</span></h3>
 
@@ -328,6 +311,86 @@ const getAlBooks = async () => {
       </div>
   </div>`
   );
+};
+
+const getOneBook = async (id) => {
+  let data;
+  await fetch(`${API_URL}/book/${id}/`)
+    .then((response) => response.json())
+    .then((respons) => (data = respons.data))
+    .catch((e) => console.log(e));
+
+  document.getElementById("book-view__container").innerHTML = `
+    <div class="book-view__card">
+      <div class="book-view__img"></div>
+      <div class="book-view__body">
+          <div class="item">
+            <h3>Title: <span>${data.title}</span></h3>
+            <h3>ISBN: <span>${data.isbn}</span></h3>
+            <h3>Left: <span style="color: red;">${data.amount}</span></h3>
+
+          </div>
+          <div class="item">
+            <h3>Author: <span>${data.author}</span></h3>
+            <h3>Category: <span>${data.category}</span></h3>
+            <h3>publishing year: <span>${data.pYear}</span></h3>
+
+          </div>
+
+      </div>
+    <div class="book-view__actions">
+        <a class="btn">Book</a>
+        <a class="btn" href="#open-modal">Edit</a>
+    </div>
+
+
+<!-- Edit Form -->
+<div id="open-modal" class="modal-window">
+<div>
+    <a href="#" title="Close" class="modal-close">Close</a>
+    <div>
+        <h1 class="title"></h1>
+
+        <form>
+            <div class="inputs-control">
+                <label>Title</label>
+                <input type="text" required placeholder="Book Title" name="title" value="${data.title}"/>
+            </div>
+            <div class="inputs-control">
+                <label>Author</label>
+                <input type="text" required placeholder="Book Author" name="author" value="${data.author}"/>
+            </div>
+            <div class="inputs-control">
+                <label>Category</label>
+                <input type="text" required placeholder="Book Category" name="category" value="${data.category}"/>
+            </div>
+            <div class="inputs-control">
+                <label>ISBN</label>
+                <input type="text" required placeholder="Book ISBN" name="isbn" value="${data.isbn}"/>
+            </div>
+
+            <div class="inputs-control">
+                <label>Publishing year</label>
+                <input type="number" min="1900" max="2099" step="1" name="pYear" value="${data.pYear}"/>
+            </div>
+            <div class="inputs-control">
+                <label>Amount</label>
+                <input type="number" min="1" step="1" name="amount" value="${data.amount}"/>
+            </div>
+
+
+            <button type="button" onclick="bookAction('PUT')">Submit</button>
+
+        </form>
+
+
+    </div>
+</div>
+</div>
+
+</div>
+
+    `;
 };
 
 const search = async () => {
@@ -351,6 +414,8 @@ const search = async () => {
         <div class="card-body">
             <div class="item">
                 <h3>Title: <span>${book.title}</span></h3>
+            </div>
+            <div class="item">
                 <h3>Author: <span>${book.author}</span></h3>
                 <h3>Category: <span>${book.category}</span></h3>
   

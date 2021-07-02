@@ -29,7 +29,7 @@ button {
   cursor: pointer;
   margin: 10px 10px;
   color: #fff;
-  background-color: #0826ff;
+  background: repeating-linear-gradient(163deg, #dc0000, #0066ffe6 100%);
 }
 button:hover {
   opacity: 0.9;
@@ -43,7 +43,7 @@ button:hover {
   border: 0;
   cursor: pointer;
   margin: 10px 10px;
-  background-color: rgb(0, 25, 209);
+  background: repeating-linear-gradient(163deg, #dc0000, #0066ffe6 100%);
   color: #fff;
 }
 .btn:hover {
@@ -172,12 +172,11 @@ form {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background: repeating-linear-gradient(168deg, #141412, #913715 100%);
+  background: repeating-linear-gradient(163deg, #8e0000, #212121e3 100%);
   color: #fff;
   padding: 10px;
   margin: 15px 20px;
   width: 490px;
-  height: 400px;
   max-width: 100%;
   box-sizing: content-box;
   border-radius: 9px;
@@ -202,6 +201,9 @@ form {
   display: flex;
   flex-direction: column;
   width: 100%;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .card-body .item,
@@ -210,6 +212,18 @@ form {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.card-body .item h3 {
+  margin: 5px 0;
+  padding: 0 5px;
+  font-weight: unset;
+}
+
+.card-body .item h3 > span,
+.book-view__body .item h3 > span {
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .card-footer {
@@ -267,17 +281,18 @@ form {
 }
 
 /* BOOK PAGE */
-.book-view__container {
+#book-view__container {
   display: flex;
   height: 100vh;
 }
 
 .book-view__card {
   flex-direction: row;
-  width: 100%;
-  height: 97vh;
+  width: 90%;
+  height: 84vh;
   box-sizing: border-box;
-  background: repeating-linear-gradient(163deg, #8e0000, #212121e3 100%);
+  margin: auto;
+  padding: 41px;
 }
 
 .book-view__img {
@@ -291,8 +306,19 @@ form {
 .book-view__body {
   flex: 2;
   margin: auto;
+  padding: 10px;
 }
+
 .book-view__actions {
   align-self: flex-end;
   margin-bottom: 50px;
+}
+
+@media (max-width: 900px) {
+  .book-view__card {
+    flex-direction: column;
+  }
+  .book-view__actions {
+    align-self: center;
+  }
 }
