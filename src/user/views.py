@@ -33,7 +33,8 @@ class Signup(CreateView):
                     firstName=firstName, lastName=lastName, email=email, password=hashed, token=token)
                 user.save()
 
-        except:
+        except Exception as e:
+            print(e)
             response = JsonResponse([], safe=False)
             response.status_code = 400
             return response
