@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="profile-view__card">
+            <div class="profile-view__img">
+                <img src="./static/user-avatar.png" />
+            </div>
+            <div class="profile-view__body">
+                <div class="item">
+                    <h3>FirstName: <span>dfsd</span></h3>
+                    <h3>LasstName: <span>456</span></h3>
+                    <h3>E-mail: <span>ejtwioe2@efwe.com</span></h3>
+
+                </div>
+                <div class="item">
+                    <h3>Bwored Books: <span style="color: red;">111</span></h3>
+
+
+                </div>
+
+            </div>
+            <div class="profile-view__actions">
+                <a class="btn" href="#open-modal">Edit</a>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Edit Form -->
+    <div id="open-modal" class="modal-window">
+        <div>
+            <a href="#" title="Close" class="modal-close">Close</a>
+            <div>
+                <h1 class="title"></h1>
+
+                <form>
+                    <div class="inputs-control">
+                        <label>FirstName</label>
+                        <input type="text" required placeholder="FirstName" name="firstName">
+                    </div>
+                    <div class="inputs-control">
+                        <label>LastName</label>
+                        <input type="text" required placeholder="LastName" name="lastName">
+                    </div>
+                    <div class="inputs-control">
+                        <label>E-Mail</label>
+                        <input type="email" required placeholder="E-Mail" name="email">
+                    </div>
+
+                    <button type="button">Submit</button>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

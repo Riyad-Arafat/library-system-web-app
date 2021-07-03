@@ -54,6 +54,11 @@ form {
   flex-direction: column;
 }
 
+.container {
+  display: flex;
+  height: 100vh;
+}
+
 #signup-page,
 #login-page {
   background-repeat: no-repeat;
@@ -167,7 +172,8 @@ form {
 }
 
 .card,
-.book-view__card {
+.book-view__card,
+.profile-view__card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -185,7 +191,8 @@ form {
 }
 
 .card-img,
-.book-view__img {
+.book-view__img,
+.profile-view__img {
   width: 400px;
   max-width: 100%;
   height: 200px;
@@ -197,7 +204,8 @@ form {
 }
 
 .card-body,
-.book-view__body {
+.book-view__body,
+.profile-view__body {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -207,7 +215,8 @@ form {
 }
 
 .card-body .item,
-.book-view__body .item {
+.book-view__body .item,
+.profile-view__body .item {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -280,13 +289,10 @@ form {
   z-index: 11;
 }
 
-/* BOOK PAGE */
-#book-view__container {
-  display: flex;
-  height: 100vh;
-}
+/* BOOK PAGE AND PROFULE PAGE*/
 
-.book-view__card {
+.book-view__card,
+.profile-view__card {
   flex-direction: row;
   width: 90%;
   height: 84vh;
@@ -295,7 +301,8 @@ form {
   padding: 41px;
 }
 
-.book-view__img {
+.book-view__img,
+.profile-view__img {
   flex: 2;
   border-bottom: 0;
   height: 50%;
@@ -303,22 +310,41 @@ form {
   border-radius: 10px;
 }
 
-.book-view__body {
+.book-view__body,
+.profile-view__body {
   flex: 2;
-  margin: auto;
   padding: 10px;
 }
 
-.book-view__actions {
+.book-view__body .item h3,
+.profile-view__body .item h3 {
+  margin: 13px 10px;
+}
+
+.book-view__actions,
+.profile-view__actions {
   align-self: flex-end;
   margin-bottom: 50px;
 }
 
+.profile-view__img {
+  display: flex;
+  background-image: none;
+}
+.profile-view__img img {
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
+  filter: drop-shadow(0px 0px 22px black);
+}
+
 @media (max-width: 900px) {
-  .book-view__card {
+  .book-view__card,
+  .profile-view__card {
     flex-direction: column;
   }
-  .book-view__actions {
+  .book-view__actions,
+  .profile-view__actions {
     align-self: center;
   }
 }
