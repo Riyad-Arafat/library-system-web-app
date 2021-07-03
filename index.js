@@ -14,7 +14,7 @@ const navBar = `
 const singupPage = `<div id="signup-page" style="background-image: url('./static/signup.jpeg');">
 <h1 class="title">sign up</h1>
 <section>
-    <form>
+    <form onsubmit = "event.preventDefault(); signUp();">
         <br>
         <div class="inputs-control">
             <label>First Name</label>
@@ -34,10 +34,10 @@ const singupPage = `<div id="signup-page" style="background-image: url('./static
                 minlength="8" maxlength="15">
         </div>
 
-        <button id="signup-btn" type="button" onclick="signUp()" style="background-color: bisque;">Sign
-            up</button>
-
+        <button id="signup-btn" onclick="signUp()" style="background-color: bisque;">Sign up</button>
     </form>
+    <br/>
+    <a href="#" class="btn" onclick="onNavigate('#/login'); return false;">login</a><
 </section>
 </div>`;
 
@@ -45,7 +45,7 @@ const singupPage = `<div id="signup-page" style="background-image: url('./static
 const loginPage = `<div id="login-page" style="background-image: url('./static/login.jpg')">
 <h1 class="title"> Login </h1>
 <section>
-    <form>
+    <form onsubmit = "event.preventDefault(); login();">
         <br>
         <div class="inputs-control">
             <label>E-mail</label>
@@ -59,9 +59,11 @@ const loginPage = `<div id="login-page" style="background-image: url('./static/l
         </div>
         <br>
 
-        <button  onclick="login()" type="button" style="background-color: blanchedalmond;">Submit</button>
+        <button  onclick="login()"  style="background-color: blanchedalmond;">Login</button>
 
     </form>
+    <br/>
+    <a href="#" class="btn" onclick="onNavigate('#/signup'); return false;">Signup</a><
 </section>
 
 </div>`;
@@ -77,7 +79,11 @@ const HomePage = `
   <div>
       <input type="text" name="search" placeholder="search" onchange="search()"#/>
   </div>
-<a type="button" class="btn" href="#open-modal">Add New Book</a>
+  ${
+    localStorage.getItem("role") === "ADMIN"
+      ? `<a type="button" class="btn" href="#open-modal">Add New Book</a>`
+      : ""
+  }
 
 </div>
 
@@ -233,7 +239,6 @@ const signUp = () => {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
-      let respons = JSON.parse(this.response);
       onNavigate("#/login");
     }
   };
@@ -244,15 +249,18 @@ const signUp = () => {
 };
 
 // // // LOGIN
-const login = () => {
+const login = (e) => {
   let email = document.querySelector("input[name='email']").value;
   let password = document.querySelector("input[name='password']").value;
 
   const data = { email, password };
+  console.log(data);
+
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       let respons = JSON.parse(this.response);
+      console.log(respons);
       localStorage.setItem("token", respons.data.token);
       localStorage.setItem("role", respons.data.role);
       onNavigate("#/home");
@@ -355,19 +363,25 @@ const getOneBook = async (id) => {
     </div>
   <div class="book-view__actions" id="book-act">
     ${
-      data.users.length > 0
-        ? data.users.map((user) => {
-            token = localStorage.getItem("token");
-            console.log(user.token === token);
-            if (user.token !== token) {
-              return `<a class="btn" onclick="bookingActions('POST')">Book</a>`;
-            } else {
-              return `<a class="btn" onclick="bookingActions('DELETE')" style="background: red;">Remove</a>`;
-            }
-          })
-        : `<a class="btn" onclick="bookingActions('POST')">Book</a>`
+      data.users.length > 0 &&
+      data.users.find((user) => {
+        token = localStorage.getItem("token");
+        if (user.token === token) {
+          return true;
+        }
+        return false;
+      })
+        ? `<a class="btn" onclick="bookingActions('DELETE')" style="background: red;">Remove</a>`
+        : data.amount > 0
+        ? `<a class="btn" onclick="bookingActions('POST')">Book</a>`
+        : ""
     }
-      <a class="btn" href="#open-modal">Edit</a>
+    ${
+      localStorage.getItem("role") === "ADMIN"
+        ? `<a class="btn" href="#open-modal">Edit</a>`
+        : ""
+    }
+    
   </div>
 
 
