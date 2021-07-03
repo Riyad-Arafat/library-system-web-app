@@ -41,26 +41,6 @@ const singupPage = `<div id="signup-page" style="background-image: url('./static
 </section>
 </div>`;
 
-const signUp = () => {
-  let firstName = document.querySelector("input[name='firstName']").value;
-  let lastName = document.querySelector("input[name='lastName']").value;
-  let email = document.querySelector("input[name='email']").value;
-  let password = document.querySelector("input[name='password']").value;
-
-  const data = { firstName, lastName, email, password };
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      let respons = JSON.parse(this.response);
-      if (respons.satusCode === 200) onNavigate("#/login");
-    }
-  };
-  xhttp.open("POST", `${API_URL}/auth/signup/`, true);
-  xhttp.setRequestHeader("accept", "application/json");
-
-  xhttp.send(JSON.stringify(data));
-};
-
 // // // // // // // // // // // // // //  LOGIN PAGE // // // // // // // // // // // // // // // // // // // // // //
 const loginPage = `<div id="login-page" style="background-image: url('./static/login.jpg')">
 <h1 class="title"> Login </h1>
@@ -85,26 +65,6 @@ const loginPage = `<div id="login-page" style="background-image: url('./static/l
 </section>
 
 </div>`;
-
-const login = () => {
-  let email = document.querySelector("input[name='email']").value;
-  let password = document.querySelector("input[name='password']").value;
-
-  const data = { email, password };
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      let respons = JSON.parse(this.response);
-      localStorage.setItem("token", respons.data.token);
-      localStorage.setItem("role", respons.data.role);
-      onNavigate("#/home");
-    }
-  };
-  xhttp.open("POST", `${API_URL}/auth/login/`, true);
-  xhttp.setRequestHeader("accept", "application/json");
-
-  xhttp.send(JSON.stringify(data));
-};
 
 // // // // // // // // // // // // HOME PAGE // // // // // // // // // // // // // // // // // // // // // //
 
@@ -169,31 +129,6 @@ const HomePage = `
 
 `;
 
-const bookAction = (method) => {
-  let title = document.querySelector("input[name='title']").value;
-  let author = document.querySelector("input[name='author']").value;
-  let isbn = document.querySelector("input[name='isbn']").value;
-  let category = document.querySelector("input[name='category']").value;
-  let pYear = document.querySelector("input[name='pYear']").value;
-  let amount = document.querySelector("input[name='amount']").value;
-
-  const data = { title, author, isbn, category, pYear, amount };
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      let respons = JSON.parse(this.response);
-      if (method === "POST") onNavigate("#/home");
-      if (method === "PUT") onNavigate("#/book");
-    }
-  };
-  if (method === "POST") xhttp.open(method, `${API_URL}/books/`, true);
-  if (method === "PUT") xhttp.open(method, `${API_URL}/book/${bookId}/`, true);
-
-  xhttp.setRequestHeader("accept", "application/json");
-
-  xhttp.send(JSON.stringify(data));
-};
-
 // // // // // BOOK PAGE
 
 const bookPage = `
@@ -201,7 +136,32 @@ const bookPage = `
   ${navBar}
 </header>
 
-<div id="book-view__container"></div>
+<div id="book-view__container" class="container"></div>
+
+`;
+
+// // // PROFILE PAGE
+
+const profilePage = `
+    ${navBar}
+    <div class="container">
+
+        <div class="profile-view__card">
+            <div class="profile-view__img">
+                <img src="./static/user-avatar.png" />
+            </div>
+            <div class="profile-view__body" id="profile-info"></div>
+            <div class="profile-view__actions">
+                <a class="btn" href="#open-modal">Edit</a>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Edit Form -->
+    <div id="open-modal" class="modal-window">
+        
+    </div>
 
 
 `;
@@ -211,7 +171,7 @@ const routes = {
   "#/home": HomePage,
   "#/login": loginPage,
   "#/signup": singupPage,
-  "#/profile": "profile_Path",
+  "#/profile": profilePage,
   "#/book": bookPage,
 };
 
@@ -248,6 +208,9 @@ const onNavigate = async (pathname) => {
   if (pathname === "#/home") {
     getAllBooks();
   }
+  if (pathname === "#/profile") {
+    authMe();
+  }
   window.history.pushState({}, pathname, window.location.origin + pathname);
   document.getElementById("root").innerHTML = routes[pathname];
 
@@ -258,6 +221,48 @@ const onNavigate = async (pathname) => {
 };
 
 window.onhashchange = () => Routing();
+
+// // // // // SIGN UP
+const signUp = () => {
+  let firstName = document.querySelector("input[name='firstName']").value;
+  let lastName = document.querySelector("input[name='lastName']").value;
+  let email = document.querySelector("input[name='email']").value;
+  let password = document.querySelector("input[name='password']").value;
+
+  const data = { firstName, lastName, email, password };
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      let respons = JSON.parse(this.response);
+      onNavigate("#/login");
+    }
+  };
+  xhttp.open("POST", `${API_URL}/auth/signup/`, true);
+  xhttp.setRequestHeader("accept", "application/json");
+
+  xhttp.send(JSON.stringify(data));
+};
+
+// // // LOGIN
+const login = () => {
+  let email = document.querySelector("input[name='email']").value;
+  let password = document.querySelector("input[name='password']").value;
+
+  const data = { email, password };
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      let respons = JSON.parse(this.response);
+      localStorage.setItem("token", respons.data.token);
+      localStorage.setItem("role", respons.data.role);
+      onNavigate("#/home");
+    }
+  };
+  xhttp.open("POST", `${API_URL}/auth/login/`, true);
+  xhttp.setRequestHeader("accept", "application/json");
+
+  xhttp.send(JSON.stringify(data));
+};
 
 // /// LOGOUT
 const logOut = () => {
@@ -278,131 +283,179 @@ const onOpenBook = (id) => {
 
 const getAllBooks = async () => {
   let data = [];
-  await fetch(`${API_URL}/books/`)
-    .then((response) => response.json())
-    .then((respons) => (data = respons.data))
-    .catch((e) => console.log(e));
-  document.getElementById("books-container").innerHTML = data.map(
-    (book) =>
-      `<div class="card">
-      <div class="card-img"></div>
-      <div class="card-body">
-          <div class="item">
-            <h3>Title: <span>${book.title}</span></h3>
-          </div>
-          <div class="item">
-              <h3>Author: <span>${book.author}</span></h3>
-              <h3>Category: <span>${book.category}</span></h3>
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    let response = JSON.parse(this.response);
+    data = response.data;
+    document.getElementById("books-container").innerHTML = data.map(
+      (book) =>
+        `<div class="card">
+        <div class="card-img"></div>
+        <div class="card-body">
+            <div class="item">
+              <h3>Title: <span>${book.title}</span></h3>
+            </div>
+            <div class="item">
+                <h3>Author: <span>${book.author}</span></h3>
+                <h3>Category: <span>${book.category}</span></h3>
+  
+            </div>
+            <div class="item">
+                <h3>publishing year: <span>${book.pYear}</span></h3>
+                <h3>Left: <span style="color: red;">${book.amount}</span></h3>
+  
+                
+            </div>
+            <div class="item">
+              <h3>ISBN: <span>${book.isbn}</span></h3>
+            </div>
+  
+        </div>
+        <div class="card-footer">
+            <button onclick="onOpenBook(${book.id})" >Open</button>
+        </div>
+    </div>`
+    );
+  };
+  xhttp.open("GET", `${API_URL}/books/`, true);
 
-          </div>
-          <div class="item">
-              <h3>publishing year: <span>${book.pYear}</span></h3>
-              <h3>Left: <span style="color: red;">${book.amount}</span></h3>
-
-              
-          </div>
-          <div class="item">
-            <h3>ISBN: <span>${book.isbn}</span></h3>
-          </div>
-
-      </div>
-      <div class="card-footer">
-          <button onclick="onOpenBook(${book.id})" >Open</button>
-      </div>
-  </div>`
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
   );
+  xhttp.setRequestHeader("accept", "application/json");
+  xhttp.send();
 };
 
 const getOneBook = async (id) => {
   let data;
-  await fetch(`${API_URL}/book/${id}/`)
-    .then((response) => response.json())
-    .then((respons) => (data = respons.data))
-    .catch((e) => console.log(e));
 
-  document.getElementById("book-view__container").innerHTML = `
-    <div class="book-view__card">
-      <div class="book-view__img"></div>
-      <div class="book-view__body">
-          <div class="item">
-            <h3>Title: <span>${data.title}</span></h3>
-            <h3>ISBN: <span>${data.isbn}</span></h3>
-            <h3>Left: <span style="color: red;">${data.amount}</span></h3>
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    let response = JSON.parse(this.response);
+    data = response.data;
 
-          </div>
-          <div class="item">
-            <h3>Author: <span>${data.author}</span></h3>
-            <h3>Category: <span>${data.category}</span></h3>
-            <h3>publishing year: <span>${data.pYear}</span></h3>
+    document.getElementById("book-view__container").innerHTML = `
+  <div class="book-view__card">
+    <div class="book-view__img"></div>
+    <div class="book-view__body">
+        <div class="item">
+          <h3>Title: <span>${data.title}</span></h3>
+          <h3>ISBN: <span>${data.isbn}</span></h3>
+          <h3>Left: <span style="color: red;">${data.amount}</span></h3>
 
-          </div>
+        </div>
+        <div class="item">
+          <h3>Author: <span>${data.author}</span></h3>
+          <h3>Category: <span>${data.category}</span></h3>
+          <h3>publishing year: <span>${data.pYear}</span></h3>
 
-      </div>
-    <div class="book-view__actions">
-        <a class="btn">Book</a>
-        <a class="btn" href="#open-modal">Edit</a>
+        </div>
+
     </div>
+  <div class="book-view__actions" id="book-act">
+    ${
+      data.users.length > 0
+        ? data.users.map((user) => {
+            token = localStorage.getItem("token");
+            console.log(user.token === token);
+            if (user.token !== token) {
+              return `<a class="btn" onclick="bookingActions('POST')">Book</a>`;
+            } else {
+              return `<a class="btn" onclick="bookingActions('DELETE')" style="background: red;">Remove</a>`;
+            }
+          })
+        : `<a class="btn" onclick="bookingActions('POST')">Book</a>`
+    }
+      <a class="btn" href="#open-modal">Edit</a>
+  </div>
 
 
 <!-- Edit Form -->
 <div id="open-modal" class="modal-window">
 <div>
-    <a href="#" title="Close" class="modal-close">Close</a>
-    <div>
-        <h1 class="title"></h1>
+  <a href="#" title="Close" class="modal-close">Close</a>
+  <div>
+      <h1 class="title"></h1>
 
-        <form>
-            <div class="inputs-control">
-                <label>Title</label>
-                <input type="text" required placeholder="Book Title" name="title" value="${data.title}"/>
-            </div>
-            <div class="inputs-control">
-                <label>Author</label>
-                <input type="text" required placeholder="Book Author" name="author" value="${data.author}"/>
-            </div>
-            <div class="inputs-control">
-                <label>Category</label>
-                <input type="text" required placeholder="Book Category" name="category" value="${data.category}"/>
-            </div>
-            <div class="inputs-control">
-                <label>ISBN</label>
-                <input type="text" required placeholder="Book ISBN" name="isbn" value="${data.isbn}"/>
-            </div>
+      <form>
+          <div class="inputs-control">
+              <label>Title</label>
+              <input type="text" required placeholder="Book Title" name="title" value="${
+                data.title
+              }"/>
+          </div>
+          <div class="inputs-control">
+              <label>Author</label>
+              <input type="text" required placeholder="Book Author" name="author" value="${
+                data.author
+              }"/>
+          </div>
+          <div class="inputs-control">
+              <label>Category</label>
+              <input type="text" required placeholder="Book Category" name="category" value="${
+                data.category
+              }"/>
+          </div>
+          <div class="inputs-control">
+              <label>ISBN</label>
+              <input type="text" required placeholder="Book ISBN" name="isbn" value="${
+                data.isbn
+              }"/>
+          </div>
 
-            <div class="inputs-control">
-                <label>Publishing year</label>
-                <input type="number" min="1900" max="2099" step="1" name="pYear" value="${data.pYear}"/>
-            </div>
-            <div class="inputs-control">
-                <label>Amount</label>
-                <input type="number" min="1" step="1" name="amount" value="${data.amount}"/>
-            </div>
+          <div class="inputs-control">
+              <label>Publishing year</label>
+              <input type="number" min="1900" max="2099" step="1" name="pYear" value="${
+                data.pYear
+              }"/>
+          </div>
+          <div class="inputs-control">
+              <label>Amount</label>
+              <input type="number" min="1" step="1" name="amount" value="${
+                data.amount
+              }"/>
+          </div>
 
 
-            <button type="button" onclick="bookAction('PUT')">Submit</button>
+          <button type="button" onclick="bookAction('PUT')">Submit</button>
 
-        </form>
+      </form>
 
 
-    </div>
+  </div>
 </div>
 </div>
 
 </div>
 
-    `;
+  `;
+  };
+  xhttp.open("POST", `${API_URL}/auth/me/`, true);
+
+  xhttp.open("GET", `${API_URL}/book/${id}/`, true);
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+  xhttp.send();
 };
 
 const search = async () => {
   let query = document.querySelector("input[name='search']").value;
   let data = [];
   if (query !== "")
-    await fetch(`${API_URL}/books/search/q=${query}/`)
+    await fetch(`${API_URL}/books/search/q=${query}/`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
       .then((response) => response.json())
       .then((respons) => (data = respons.data))
       .catch((e) => console.log(e));
   else
-    await fetch(`${API_URL}/books/`)
+    await fetch(`${API_URL}/books/`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
       .then((response) => response.json())
       .then((respons) => (data = respons.data))
       .catch((e) => console.log(e));
@@ -436,4 +489,128 @@ const search = async () => {
         </div>
     </div>`
   );
+};
+
+const bookAction = (method) => {
+  let title = document.querySelector("input[name='title']").value;
+  let author = document.querySelector("input[name='author']").value;
+  let isbn = document.querySelector("input[name='isbn']").value;
+  let category = document.querySelector("input[name='category']").value;
+  let pYear = document.querySelector("input[name='pYear']").value;
+  let amount = document.querySelector("input[name='amount']").value;
+
+  const data = { title, author, isbn, category, pYear, amount };
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      if (method === "POST") onNavigate("#/home");
+      if (method === "PUT") onNavigate("#/book");
+    }
+  };
+  if (method === "POST") xhttp.open(method, `${API_URL}/books/`, true);
+  if (method === "PUT") xhttp.open(method, `${API_URL}/book/${bookId}/`, true);
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+
+  xhttp.send(JSON.stringify(data));
+};
+
+const authMe = async () => {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    data = JSON.parse(this.response);
+    document.getElementById("profile-info").innerHTML = `
+    <div class="item">
+        <h3>FirstName: <span>${data.firstName}</span></h3>
+        <h3>LasstName: <span>${data.lastName}</span></h3>
+        <h3>E-mail: <span>${data.email}</span></h3>
+
+    </div>
+    <div class="item">
+        <h3>Books: <span style="color: red;">${
+          data.books.length || 0
+        }</span></h3>
+    </div>
+    `;
+    document.getElementById("open-modal").innerHTML = `
+    <div>
+    <a href="#" title="Close" class="modal-close">Close</a>
+    <div>
+        <h1 class="title"></h1>
+
+        <form>
+            <div class="inputs-control">
+                <label>FirstName</label>
+                <input type="text" required placeholder="FirstName" name="firstName" value="${data.firstName}">
+            </div>
+            <div class="inputs-control">
+                <label>LastName</label>
+                <input type="text" required placeholder="LastName" name="lastName" value="${data.lastName}">
+            </div>
+            <div class="inputs-control">
+                <label>E-Mail</label>
+                <input type="email" required placeholder="E-Mail" name="email" value="${data.email}">
+            </div>
+
+            <button type="button" onclick="updateUser()">Submit</button>
+
+        </form>
+
+
+    </div>
+</div>
+    `;
+  };
+  xhttp.open("POST", `${API_URL}/auth/me/`, true);
+
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+  xhttp.send();
+};
+
+const updateUser = () => {
+  let firstName = document.querySelector("input[name='firstName']").value;
+  let lastName = document.querySelector("input[name='lastName']").value;
+  let email = document.querySelector("input[name='email']").value;
+
+  const data = { firstName, lastName, email };
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      onNavigate("#/profile");
+    }
+  };
+  xhttp.open("PUT", `${API_URL}/auth/me/`, true);
+
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+
+  xhttp.send(JSON.stringify(data));
+};
+
+const bookingActions = (method) => {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    onNavigate("#/book");
+  };
+  if (method === "POST")
+    xhttp.open("POST", `${API_URL}/book/add/${bookId}/`, true);
+  if (method === "DELETE")
+    xhttp.open("POST", `${API_URL}/book/delete/${bookId}/`, true);
+
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+  xhttp.send();
 };
