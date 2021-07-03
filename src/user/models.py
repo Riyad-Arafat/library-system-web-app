@@ -28,6 +28,5 @@ class User(models.Model):
     created_at = DateTimeField(default=timezone.now)
     update_at = DateTimeField(auto_now=True)
 
-
-def __str__(self):
-    return self.firstName + " " + self.lastName
+    def __str__(self):
+        return self.firstName + " " + self.lastName

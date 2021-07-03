@@ -51,7 +51,7 @@ class Books(CreateView):
             try:
                 if(not isAuthenticated(token)):
                     raise Exception("Invalid Token")
-                books = BookModel.objects.filter(~Q(amount=0)).values("id", "title", "author",  "category", "isbn", "pYear", 'amount', "users",
+                books = BookModel.objects.all().values("id", "title", "author",  "category", "isbn", "pYear", 'amount', "users",
                                                                       "created_at",  "update_at").order_by('-created_at')
                 data = list(books)
 
@@ -127,11 +127,11 @@ class Book(CreateView):
             user = user[0]
             book = BookModel.objects.filter(pk=id)
             book = book[0]
-            if(user and book.amount > 0):
+            if(user):
                 if task == "delete" and book in user.books.all():
                     user.books.remove(book)
                     book.amount += 1
-                elif task == "add" and book not in user.books.all():
+                elif task == "add" and book.amount > 0 and book not in user.books.all():
                     user.books.add(book)
                     book.amount -= 1
 
