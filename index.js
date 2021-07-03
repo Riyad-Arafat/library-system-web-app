@@ -181,7 +181,7 @@ const routes = {
   "#/book": bookPage,
 };
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "http://riyadelberkawy.pythonanywhere.com";
 
 let bookId = 0;
 
@@ -200,10 +200,14 @@ function Routing() {
 // // //  RENDER THE PAGE BY ITS URL
 window.onload = () => {
   const hash = window.location.hash;
+  const token = localStorage.getItem("token") ? true : false;
+  if (!token) {
+    return onNavigate("#/login");
+  }
   if (!hash || !routes[hash]) {
-    onNavigate("#/home");
+    return onNavigate("#/home");
   } else {
-    Routing();
+    return Routing();
   }
 };
 // // // ROUTING FUNCTION
@@ -254,13 +258,11 @@ const login = (e) => {
   let password = document.querySelector("input[name='password']").value;
 
   const data = { email, password };
-  console.log(data);
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       let respons = JSON.parse(this.response);
-      console.log(respons);
       localStorage.setItem("token", respons.data.token);
       localStorage.setItem("role", respons.data.role);
       onNavigate("#/home");
