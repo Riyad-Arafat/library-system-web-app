@@ -4,72 +4,127 @@ import json
 import bcrypt
 import uuid
 from user.models import User
+from django.core import serializers
+
 # Create your views here.
 
 
 class Signup(CreateView):
 
     def post(self, request):
-        if request.method == 'POST':
-            body = json.loads(request.body)
 
-            data = {"satusCode": 200}
-            try:
+        body = json.loads(request.body)
+        data = {}
 
-                firstName = body["firstName"]
-                lastName = body["lastName"]
-                email = body["email"]
-                password = body["password"].encode('utf8')
-                hashed = bcrypt.hashpw(password, bcrypt.gensalt()).decode()
-                token = str(uuid.uuid4())
+        try:
 
-                if(len(email) < 10 or len(password) < 8 or firstName == "" or lastName == ""):
-                    data = {"satusCode": 400}
+            firstName = body["firstName"]
+            lastName = body["lastName"]
+            email = body["email"]
+            password = body["password"].encode('utf8')
+            hashed = bcrypt.hashpw(password, bcrypt.gensalt()).decode()
+            token = str(uuid.uuid4())
 
-                else:
-                    user = User.objects.create(
-                        firstName=firstName, lastName=lastName, email=email, password=hashed, token=token)
-                    user.save()
+            if(len(email) < 10 or len(password) < 8 or firstName == "" or lastName == ""):
+                raise Exception("wrong Info")
 
-            except:
-                data = {"satusCode": 400}
-            return JsonResponse(data, safe=False)
-        else:
-            return JsonResponse({"satusCode": 404}, safe=False)
+            else:
+                user = User.objects.create(
+                    firstName=firstName, lastName=lastName, email=email, password=hashed, token=token)
+                user.save()
 
-    def get(self, request):
-        return JsonResponse({"satusCode": 404}, safe=False)
+        except:
+            response = JsonResponse([], safe=False)
+            response.status_code = 400
+            return response
+        return JsonResponse(data, safe=False)
 
 
 class Login(CreateView):
 
     def post(self, request):
-        if request.method == 'POST':
-            body = json.loads(request.body)
-            response = {"satusCode": 200}
-            try:
-                email = body["email"]
-                password = body["password"].encode('utf8')
 
-                user = User.objects.filter(email=email).values(
-                    "password", "token", "role")
+        body = json.loads(request.body)
+        data = {}
+        try:
+            email = body["email"]
+            password = body["password"].encode('utf8')
 
-                data = list(user)
-                data = json.loads(json.dumps(data[0]))
+            user = User.objects.filter(email=email).values(
+                "password", "token", "role")
 
-                if bcrypt.checkpw(password, data["password"].encode("utf8")):
-                    del data["password"]
-                    response = {"data": data, "satusCode": 200}
-                else:
-                    response = {"satusCode": 400}
+            data = list(user)
+            data = json.loads(json.dumps(data[0]))
 
-            except:
-                response = {"satusCode": 400}
+            if bcrypt.checkpw(password, data["password"].encode("utf8")):
+                del data["password"]
+                data = {"data": data}
+            else:
+                raise Exception("password is wrong")
 
-            return JsonResponse(response, safe=False)
+        except Exception as e:
+            print(e)
+            response = JsonResponse([], safe=False)
+            response.status_code = 400
+            return response
 
-        else:
-            return JsonResponse({"satusCode": 404}, safe=False)
+        return JsonResponse(data, safe=False)
 
-    def get(self, request):
-        return JsonResponse({"satusCode": 404}, safe=False)
+
+class UserClass(CreateView):
+
+    def post(self, request):
+
+        Bearer = request.headers.get('Authorization') or ""
+
+        token = Bearer.split("Bearer ")[1] or ""
+
+        try:
+            json_data = serializers.serialize(
+                "json", User.objects.filter(token=token))
+
+            data = json.loads(json_data)
+            data = data[0]["fields"]
+
+        except Exception as e:
+            print(e)
+            response = JsonResponse([], safe=False)
+            response.status_code = 400
+            return response
+
+        return JsonResponse(data, safe=False)
+
+    def put(self, request):
+
+        body = json.loads(request.body)
+        data = {}
+
+        try:
+
+            firstName = body["firstName"]
+            lastName = body["lastName"]
+            email = body["email"]
+
+            if(len(email) < 10 or firstName == "" or lastName == ""):
+                raise Exception("wrong Info")
+
+            Bearer = request.headers.get('Authorization') or ""
+
+            token = Bearer.split("Bearer ")[1] or ""
+
+            user = User.objects.filter(token=token)
+            user = user[0]
+            if(user.role != "ADMIN" or token == user.token):
+                user.firstName = firstName
+                user.lastName = lastName
+                user.email = email
+                user.save()
+            else:
+                raise Exception("4001")
+
+        except Exception as e:
+            print(e)
+            response = JsonResponse([], safe=False)
+            response.status_code = 400
+            return response
+        return JsonResponse(data, safe=False)

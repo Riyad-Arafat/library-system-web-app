@@ -9,6 +9,6 @@ urlpatterns = [
          csrf_exempt(Books.as_view()), name="search"),
 
     path('book/<int:id>/',  csrf_exempt(Book.as_view()), name="book"),
-    path('book/<task>/<int:id>',  csrf_exempt(Book.as_view()), name="book"),
+    path('book/<task>/<int:id>/',  csrf_exempt(Book.as_view()), name="book"),
 
 ]
