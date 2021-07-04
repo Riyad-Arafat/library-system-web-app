@@ -374,12 +374,11 @@ form {
 
 .loader {
   position: absolute;
-  left: 50%;
   top: 50%;
+  margin: auto;
   z-index: 1;
   width: 50px;
   height: 50px;
-  margin: -76px 0 0 -76px;
   border: 5px solid #e91e63;
   border-radius: 50%;
   border-top: 5px solid #ffffff00;
