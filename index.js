@@ -10,6 +10,8 @@ const navBar = `
 
 `;
 
+const loader = `<div class="loader"></div>`;
+
 // // // // // // // // // // // SIGNUP PAGE // // // // // // // // // // // // // // // // // // // // // //
 const singupPage = `<div id="signup-page" style="background-image: url('./static/signup.jpeg');">
 <h1 class="title">sign up</h1>
@@ -185,6 +187,10 @@ const API_URL = "http://riyadelberkawy.pythonanywhere.com";
 
 let bookId = 0;
 
+function showLoader(id) {
+  document.getElementById(id).innerHTML = loader;
+}
+
 // // // // //  URGENT FUNCTIONS // // // // // // // // // // // // // // // // // // // // // //
 function Routing() {
   const hash = window.location.hash;
@@ -212,21 +218,21 @@ window.onload = () => {
 };
 // // // ROUTING FUNCTION
 const onNavigate = async (pathname) => {
+  window.history.pushState({}, pathname, window.location.origin + pathname);
+  document.getElementById("root").innerHTML = routes[pathname];
   if (pathname !== "#/book") {
     bookId = 0;
   }
+  if (pathname === "#/book") {
+    getOneBook(bookId);
+    if (bookId === 0) onNavigate("#/home");
+  }
+
   if (pathname === "#/home") {
     getAllBooks();
   }
   if (pathname === "#/profile") {
     authMe();
-  }
-  window.history.pushState({}, pathname, window.location.origin + pathname);
-  document.getElementById("root").innerHTML = routes[pathname];
-
-  if (pathname === "#/book") {
-    getOneBook(bookId);
-    if (bookId === 0) onNavigate("#/home");
   }
 };
 
@@ -294,6 +300,7 @@ const onOpenBook = (id) => {
 const getAllBooks = async () => {
   let data = [];
   const xhttp = new XMLHttpRequest();
+  showLoader("books-container");
   xhttp.onload = function () {
     let response = JSON.parse(this.response);
     data = response.data;
@@ -308,18 +315,17 @@ const getAllBooks = async () => {
             <div class="item">
                 <h3>Author: <span>${book.author}</span></h3>
                 <h3>Category: <span>${book.category}</span></h3>
-  
+
             </div>
             <div class="item">
                 <h3>publishing year: <span>${book.pYear}</span></h3>
                 <h3>Left: <span style="color: red;">${book.amount}</span></h3>
-  
-                
+
             </div>
             <div class="item">
               <h3>ISBN: <span>${book.isbn}</span></h3>
             </div>
-  
+
         </div>
         <div class="card-footer">
             <button onclick="onOpenBook(${book.id})" >Open</button>
@@ -339,12 +345,12 @@ const getAllBooks = async () => {
 
 const getOneBook = async (id) => {
   let data;
-
   const xhttp = new XMLHttpRequest();
+
+  showLoader("book-view__container");
   xhttp.onload = function () {
     let response = JSON.parse(this.response);
     data = response.data;
-
     document.getElementById("book-view__container").innerHTML = `
   <div class="book-view__card">
     <div class="book-view__img"></div>
@@ -461,6 +467,8 @@ const getOneBook = async (id) => {
 const search = async () => {
   let query = document.querySelector("input[name='search']").value;
   let data = [];
+  showLoader("books-container");
+
   if (query !== "")
     await fetch(`${API_URL}/books/search/q=${query}/`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
