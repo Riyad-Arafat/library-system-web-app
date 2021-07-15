@@ -12,7 +12,6 @@ const navBar = `
 
     </ul>
 </nav>
-
 `;
 
 const loader = `<div class="loader"></div>`;
@@ -206,6 +205,25 @@ function Routing() {
   if (isGuestHash && token) onNavigate("#/home");
   if (!isGuestHash && token && routes[hash]) onNavigate(hash);
 }
+// // // ROUTING FUNCTION
+const onNavigate = async (pathname) => {
+  window.history.pushState({}, pathname, window.location.origin + pathname);
+  document.getElementById("root").innerHTML = routes[pathname];
+
+  if (pathname !== "#/book") {
+    bookId = 0;
+  }
+  if (pathname === "#/book") {
+    getOneBook(bookId);
+    if (bookId === 0) onNavigate("#/home");
+  }
+  if (pathname === "#/home") {
+    getAllBooks();
+  }
+  if (pathname === "#/profile") {
+    authMe();
+  }
+};
 
 // // //  RENDER THE PAGE BY ITS URL
 window.onload = () => {
@@ -220,25 +238,6 @@ window.onload = () => {
     return Routing();
   }
 };
-// // // ROUTING FUNCTION
-const onNavigate = async (pathname) => {
-  window.history.pushState({}, pathname, window.location.origin + pathname);
-  document.getElementById("root").innerHTML = routes[pathname];
-  if (pathname !== "#/book") {
-    bookId = 0;
-  }
-  if (pathname === "#/book") {
-    getOneBook(bookId);
-    if (bookId === 0) onNavigate("#/home");
-  }
-
-  if (pathname === "#/home") {
-    getAllBooks();
-  }
-  if (pathname === "#/profile") {
-    authMe();
-  }
-};
 
 window.onhashchange = () => Routing();
 
@@ -250,15 +249,17 @@ const signUp = () => {
   let password = document.querySelector("input[name='password']").value;
 
   const data = { firstName, lastName, email, password };
+
   var xhttp = new XMLHttpRequest();
+
   xhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       onNavigate("#/login");
     }
   };
+
   xhttp.open("POST", `${API_URL}/auth/signup/`, true);
   xhttp.setRequestHeader("accept", "application/json");
-
   xhttp.send(JSON.stringify(data));
 };
 
@@ -276,10 +277,6 @@ const login = (e) => {
       localStorage.setItem("token", respons.data.token);
       localStorage.setItem("role", respons.data.role);
       if (localStorage.getItem("role") && localStorage.getItem("token")) {
-        routes["#/home"] = HomePage(
-          localStorage.getItem("role"),
-          localStorage.getItem("token")
-        );
         onNavigate("#/home");
       }
     }
@@ -303,54 +300,6 @@ const onOpenBook = (id) => {
     bookId = id;
     onNavigate("#/book");
   }
-};
-
-// // // // // // ////
-
-const getAllBooks = async () => {
-  let data = [];
-  const xhttp = new XMLHttpRequest();
-  showLoader("books-container");
-  xhttp.onload = function () {
-    let response = JSON.parse(this.response);
-    data = response.data;
-    document.getElementById("books-container").innerHTML = data.map(
-      (book) =>
-        `<div class="card">
-        <div class="card-img"></div>
-        <div class="card-body">
-            <div class="item">
-              <h3>Title: <span>${book.title}</span></h3>
-            </div>
-            <div class="item">
-                <h3>Author: <span>${book.author}</span></h3>
-                <h3>Category: <span>${book.category}</span></h3>
-
-            </div>
-            <div class="item">
-                <h3>publishing year: <span>${book.pYear}</span></h3>
-                <h3>Left: <span style="color: red;">${book.amount}</span></h3>
-
-            </div>
-            <div class="item">
-              <h3>ISBN: <span>${book.isbn}</span></h3>
-            </div>
-
-        </div>
-        <div class="card-footer">
-            <button onclick="onOpenBook(${book.id})" >Open</button>
-        </div>
-    </div>`
-    );
-  };
-  xhttp.open("GET", `${API_URL}/books/`, true);
-
-  xhttp.setRequestHeader(
-    "Authorization",
-    `Bearer ${localStorage.getItem("token")}`
-  );
-  xhttp.setRequestHeader("accept", "application/json");
-  xhttp.send();
 };
 
 const getOneBook = async (id) => {
@@ -463,9 +412,56 @@ const getOneBook = async (id) => {
 
   `;
   };
-  xhttp.open("POST", `${API_URL}/auth/me/`, true);
 
   xhttp.open("GET", `${API_URL}/book/${id}/`, true);
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+  xhttp.send();
+};
+
+// // // // // // ////
+
+const getAllBooks = async () => {
+  let data = [];
+  const xhttp = new XMLHttpRequest();
+  showLoader("books-container");
+  xhttp.onload = function () {
+    let response = JSON.parse(this.response);
+    data = response.data;
+    document.getElementById("books-container").innerHTML = data.map(
+      (book) =>
+        `<div class="card">
+        <div class="card-img"></div>
+        <div class="card-body">
+            <div class="item">
+              <h3>Title: <span>${book.title}</span></h3>
+            </div>
+            <div class="item">
+                <h3>Author: <span>${book.author}</span></h3>
+                <h3>Category: <span>${book.category}</span></h3>
+
+            </div>
+            <div class="item">
+                <h3>publishing year: <span>${book.pYear}</span></h3>
+                <h3>Left: <span style="color: red;">${book.amount}</span></h3>
+
+            </div>
+            <div class="item">
+              <h3>ISBN: <span>${book.isbn}</span></h3>
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <button onclick="onOpenBook(${book.id})" >Open</button>
+        </div>
+    </div>`
+    );
+  };
+  xhttp.open("GET", `${API_URL}/books/`, true);
+
   xhttp.setRequestHeader(
     "Authorization",
     `Bearer ${localStorage.getItem("token")}`
@@ -525,6 +521,26 @@ const search = async () => {
   );
 };
 
+////////
+
+const bookingActions = (method) => {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    onNavigate("#/book");
+  };
+  if (method === "POST")
+    xhttp.open("POST", `${API_URL}/book/add/${bookId}/`, true);
+  if (method === "DELETE")
+    xhttp.open("POST", `${API_URL}/book/delete/${bookId}/`, true);
+
+  xhttp.setRequestHeader(
+    "Authorization",
+    `Bearer ${localStorage.getItem("token")}`
+  );
+  xhttp.setRequestHeader("accept", "application/json");
+  xhttp.send();
+};
+
 const bookAction = (method) => {
   let title = document.querySelector("input[name='title']").value;
   let author = document.querySelector("input[name='author']").value;
@@ -551,6 +567,8 @@ const bookAction = (method) => {
 
   xhttp.send(JSON.stringify(data));
 };
+
+///////
 
 const authMe = async () => {
   const xhttp = new XMLHttpRequest();
@@ -629,22 +647,4 @@ const updateUser = () => {
   xhttp.setRequestHeader("accept", "application/json");
 
   xhttp.send(JSON.stringify(data));
-};
-
-const bookingActions = (method) => {
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function () {
-    onNavigate("#/book");
-  };
-  if (method === "POST")
-    xhttp.open("POST", `${API_URL}/book/add/${bookId}/`, true);
-  if (method === "DELETE")
-    xhttp.open("POST", `${API_URL}/book/delete/${bookId}/`, true);
-
-  xhttp.setRequestHeader(
-    "Authorization",
-    `Bearer ${localStorage.getItem("token")}`
-  );
-  xhttp.setRequestHeader("accept", "application/json");
-  xhttp.send();
 };
