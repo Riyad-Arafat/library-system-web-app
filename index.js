@@ -1,3 +1,8 @@
+// Global Varible
+const API_URL = "https://riyadelberkawy.pythonanywhere.com";
+let bookId = 0;
+
+// // // // // // NAV-BAR
 const navBar = `
 <nav id=nav-bar>
     <ul>
@@ -82,7 +87,7 @@ const HomePage = `
       <input type="text" name="search" placeholder="search" onchange="search()"#/>
   </div>
   ${
-    localStorage.getItem("role") === "ADMIN"
+    localStorage.getItem("role") && localStorage.getItem("role") === "ADMIN"
       ? `<a type="button" class="btn" href="#open-modal">Add New Book</a>`
       : ""
   }
@@ -183,10 +188,6 @@ const routes = {
   "#/book": bookPage,
 };
 
-const API_URL = "http://riyadelberkawy.pythonanywhere.com";
-
-let bookId = 0;
-
 function showLoader(id) {
   document.getElementById(id).innerHTML = loader;
 }
@@ -271,7 +272,10 @@ const login = (e) => {
       let respons = JSON.parse(this.response);
       localStorage.setItem("token", respons.data.token);
       localStorage.setItem("role", respons.data.role);
-      onNavigate("#/home");
+      if (localStorage.getItem("role") && localStorage.getItem("token")) {
+        routes["#/home"] = HomePage;
+        onNavigate("#/home");
+      }
     }
   };
   xhttp.open("POST", `${API_URL}/auth/login/`, true);
