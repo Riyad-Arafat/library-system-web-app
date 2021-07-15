@@ -77,7 +77,7 @@ const loginPage = `<div id="login-page" style="background-image: url('./static/l
 
 // // // // // // // // // // // // HOME PAGE // // // // // // // // // // // // // // // // // // // // // //
 
-const HomePage = `
+const HomePage = (role, token) => `
 <header>
   ${navBar}
 </header>
@@ -87,7 +87,7 @@ const HomePage = `
       <input type="text" name="search" placeholder="search" onchange="search()"#/>
   </div>
   ${
-    localStorage.getItem("role") && localStorage.getItem("role") === "ADMIN"
+    token && role === "ADMIN"
       ? `<a type="button" class="btn" href="#open-modal">Add New Book</a>`
       : ""
   }
@@ -181,7 +181,10 @@ const profilePage = `
 
 // // ALL APPP ROUTES
 const routes = {
-  "#/home": HomePage,
+  "#/home": HomePage(
+    localStorage.getItem("role"),
+    localStorage.getItem("token")
+  ),
   "#/login": loginPage,
   "#/signup": singupPage,
   "#/profile": profilePage,
@@ -273,7 +276,10 @@ const login = (e) => {
       localStorage.setItem("token", respons.data.token);
       localStorage.setItem("role", respons.data.role);
       if (localStorage.getItem("role") && localStorage.getItem("token")) {
-        routes["#/home"] = HomePage;
+        routes["#/home"] = HomePage(
+          localStorage.getItem("role"),
+          localStorage.getItem("token")
+        );
         onNavigate("#/home");
       }
     }
