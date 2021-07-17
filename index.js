@@ -76,7 +76,7 @@ const loginPage = `<div id="login-page" style="background-image: url('./static/l
 
 // // // // // // // // // // // // HOME PAGE // // // // // // // // // // // // // // // // // // // // // //
 
-const HomePage = (role, token) => `
+const homePage = `
 <header>
   ${navBar}
 </header>
@@ -86,7 +86,7 @@ const HomePage = (role, token) => `
       <input type="text" name="search" placeholder="search" onchange="search()"#/>
   </div>
   ${
-    token && role === "ADMIN"
+    localStorage.getItem("token") && localStorage.getItem("role") === "ADMIN"
       ? `<a type="button" class="btn" href="#open-modal">Add New Book</a>`
       : ""
   }
@@ -180,10 +180,7 @@ const profilePage = `
 
 // // ALL APPP ROUTES
 const routes = {
-  "#/home": HomePage(
-    localStorage.getItem("role"),
-    localStorage.getItem("token")
-  ),
+  "#/home": homePage,
   "#/login": loginPage,
   "#/signup": singupPage,
   "#/profile": profilePage,
@@ -338,7 +335,7 @@ const getOneBook = async (id) => {
         }
         return false;
       })
-        ? `<a class="btn" onclick="bookingActions('DELETE')" style="background: red;">Remove</a>`
+        ? `<a class="btn" onclick="bookingActions('DELETE')" style="background: red;">Return</a>`
         : data.amount > 0
         ? `<a class="btn" onclick="bookingActions('POST')">Book</a>`
         : ""
